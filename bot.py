@@ -132,8 +132,8 @@ award_templates = {
     "NCO Development Ribbon - Infantry": {"Award": "NCO Development Ribbon - Infantry", "icon_position": (980,600)},
     "NCO Development Ribbon - Armor": {"Award": "NCO Development Ribbon - Armor", "icon_position": (980,620)},
     "ReClimb Unit Commendation": {"Award": "ReClimb Unit Commendation", "icon_position": (735,590)},
-    "Ranger": {"Award": "Ranger", "icon_position": (1110,440)},
-    "Recon": {"Award": "Recon", "icon_position": (1110,460)},
+    "Ranger": {"Award": "Ranger", "icon_position": (1110,460)},
+    "Recon": {"Award": "Recon", "icon_position": (1110,470)},
     "Pathfinder": {"Award": "Pathfinder", "icon_position": (1110,480)},
     "Driver - Tank Weapons": {"Award": "Driver - Tank Weapons", "icon_position": (800,825)},
     "Driver - Tracked": {"Award": "Driver - Tracked", "icon_position": (900,825)},
@@ -188,6 +188,9 @@ def generate_uniform_card(user_name, rank_role, rank_data, assign_role, assign_d
     draw = ImageDraw.Draw(img)
 
     # Draw background silhouette first so icons appear on top
+    armor_assigned = ["Fox Company Third Platoon First Squad", "Fox Company Third Platoon Second Squad", "Fox Company Third Platoon Third Squad", "Fox Company Third Platoon Fourth Squad"]
+    
+    
     sil_path = "Infantry.png"
     if os.path.exists(sil_path):
         try:
@@ -235,9 +238,9 @@ def generate_uniform_card(user_name, rank_role, rank_data, assign_role, assign_d
         # Draw assignment icon
         icon_path = role_icons.get(assign_role)
         icon_pos = assign_data.get("icon_position", (20, y))
-        if icon_path and os.path.exists(icon_path):
-            icon_img = Image.open(icon_path).resize((40, 40))
-            img.paste(icon_img, icon_pos, icon_img.convert("RGBA"))
+     #   if icon_path and os.path.exists(icon_path):
+     #       icon_img = Image.open(icon_path).resize((40, 40))
+     #       img.paste(icon_img, icon_pos, icon_img.convert("RGBA"))
         y += 40
 
     # Awards (other roles) section
@@ -320,7 +323,7 @@ async def uniform(ctx):
             role_icons[r.name] = path
 
     # Generate and send image
-    filename = f"{member.display_name}_uniform.png"
+    filename = f"{member.name}_uniform.png"
     generate_uniform_card(
         member.display_name,
         rank_role,
