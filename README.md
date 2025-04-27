@@ -5,7 +5,7 @@ Requirements
      Pip (Python package manager)
      (Optional) A virtual environment for Python projects
 
-On the Discord Developer site - https://discord.com/developers - do the following:
+On the Discord Developer site - [https://discord.com/developers](https://discord.com/developers/applications) - do the following:
      Create a "New Application"
           General Information
                - Add a name and description (icons optional)
