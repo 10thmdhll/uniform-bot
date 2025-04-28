@@ -208,7 +208,7 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
 
     # Draw background silhouette first so icons appear on top
     assign_value = assign_data.get("Assignment", "")
-    armor_assigned = ["Fox Company Third Platoon First Squad", "Fox Company Third Platoon Second Squad", "Fox Company Third Platoon Third Squad", "Fox Company Third Platoon Fourth Squad"]
+    armor_assigned = ["Fox Company Third Platoon Command","Fox Company Third Platoon First Squad", "Fox Company Third Platoon Second Squad", "Fox Company Third Platoon Third Squad", "Fox Company Third Platoon Fourth Squad"]
     
     if assign_value in armor_assigned:
         sil_path = "Armor.png"
