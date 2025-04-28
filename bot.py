@@ -265,46 +265,53 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
             y += 40
     
     # List Ribbons    
-    for aw in award_roles:
-        draw.text((40, list_y), f"- {aw}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if award_roles:
+        for aw in award_roles:
+            draw.text((40, list_y), f"- {aw}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
     
     # List Patches
-    for p1 in patch_roles:
-        draw.text((40, list_y), f"- {p1}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if patch_roles:
+        for p1 in patch_roles:
+            draw.text((40, list_y), f"- {p1}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
         
     # List Unit Coms
-    for uc1 in uc_roles:
-        draw.text((40, list_y), f"- {uc1}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if uc_roles:
+        for uc1 in uc_roles:
+            draw.text((40, list_y), f"- {uc1}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
         
     # List Driver Quals
-    for dr1 in driver_roles:
-        draw.text((40, list_y), f"- {dr1}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if driver_roles:
+        for dr1 in driver_roles:
+            draw.text((40, list_y), f"- {dr1}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
     
     # List Expert Quals
-    for eq1 in equal_roles:
-        draw.text((40, list_y), f"- {eq1}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if equal_roles:
+        for eq1 in equal_roles:
+            draw.text((40, list_y), f"- {eq1}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
         
     # List Sharpshooter Quals
-    for ss1 in squal_roles:
-        draw.text((40, list_y), f"- {ss1}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if squal_roles:
+        for ss1 in squal_roles:
+            draw.text((40, list_y), f"- {ss1}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
         
     # List Marksman Quals
-    for mq1 in mqual_roles:
-        draw.text((40, list_y), f"- {mq1}", fill="white", font=small_font)
-        list_y += 30     
-        y += 40
+    if mqual_roles:
+        for mq1 in mqual_roles:
+            draw.text((40, list_y), f"- {mq1}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
     
     # Save final image
     img.save(filename)
@@ -367,166 +374,169 @@ async def uniform(ctx):
     # Rank roles
     shoulder_list = ['Col.','Lt. Col.', 'Maj.', 'Cpt.', '1Lt.', 'CWO.', '2Lt.', 'WO.']
     # Loop through roles
-    for index, role_name in enumerate(rank_roles):
-        try:
-            # Open ribbon/patch for the role
-            role_image = Image.open(rank_templates[role_name.name]).convert('RGBA')
-
-            # Optionally resize
-            if role_name.name in shoulder_list:
-                x = 1080
-                y = 420
-                if role_name.name in ['1Lt.','2Lt.']:
-                    role_image = role_image.resize((40,60), Image.Resampling.LANCZOS)
+    if rank_roles:
+        for index, role_name in enumerate(rank_roles):
+            try:
+                # Open ribbon/patch for the role
+                role_image = Image.open(rank_templates[role_name.name]).convert('RGBA')
+    
+                # Optionally resize
+                if role_name.name in shoulder_list:
+                    x = 1080
+                    y = 420
+                    if role_name.name in ['1Lt.','2Lt.']:
+                        role_image = role_image.resize((40,60), Image.Resampling.LANCZOS)
+                    else:
+                        role_image = role_image.resize((75, 75), Image.Resampling.LANCZOS)
                 else:
-                    role_image = role_image.resize((75, 75), Image.Resampling.LANCZOS)
-            else:
-                role_image = role_image.resize((120, 150), Image.Resampling.LANCZOS)
-                x = 850
-                y = 480
+                    role_image = role_image.resize((120, 150), Image.Resampling.LANCZOS)
+                    x = 850
+                    y = 480
 
-            # Paste the role image onto background
-            bg.paste(role_image, (x, y), mask=role_image)
+                # Paste the role image onto background
+                bg.paste(role_image, (x, y), mask=role_image)
 
-        except FileNotFoundError:
-            print(f"Image for role '{role_name}' not found. Skipping.")  
+            except FileNotFoundError:
+                print(f"Image for role '{role_name}' not found. Skipping.")  
     ##################################################################################
     # EIB/CIB roles
-        
-    # Loop through roles
-    for index, role_name in enumerate(eib_roles):
-        try:
-            # Open ribbon/patch for the role
-            role_image = Image.open(eib_templates[role_name]).convert('RGBA')
-
-            # Optionally resize
-            if role_name == 'Expert Infantryman Badge':
-                role_image = role_image.resize((150, 20), Image.Resampling.LANCZOS)
-            if role_name == 'Combat Infantryman Badge':
-                role_image = role_image.resize((150, 35), Image.Resampling.LANCZOS)
+    
+    if eib_roles:
+        # Loop through roles
+        for index, role_name in enumerate(eib_roles):
+            try:
+                # Open ribbon/patch for the role
+                role_image = Image.open(eib_templates[role_name]).convert('RGBA')
+    
+                # Optionally resize
+                if role_name == 'Expert Infantryman Badge':
+                    role_image = role_image.resize((150, 20), Image.Resampling.LANCZOS)
+                if role_name == 'Combat Infantryman Badge':
+                    role_image = role_image.resize((150, 35), Image.Resampling.LANCZOS)
+                    
+                # Calculate position 
+                x = 1425 
+                y = 380  
+    
+                # Paste the role image onto background
+                bg.paste(role_image, (x, y), mask=role_image)
+    
+            except FileNotFoundError:
+                print(f"Image for role '{role_name}' not found. Skipping.")  
                 
-            # Calculate position 
-            x = 1425 
-            y = 380  
-
-            # Paste the role image onto background
-            bg.paste(role_image, (x, y), mask=role_image)
-
-        except FileNotFoundError:
-            print(f"Image for role '{role_name}' not found. Skipping.")  
-            
     ##################################################################################
     # Patches
-        
-    # Loop through roles
-    for index, role_name in enumerate(patch_roles):
-        try:
-            # Open ribbon/patch for the role
-            role_image = Image.open(patch_templates[role_name]).convert('RGBA')
-
-            # Optionally resize
-            if role_name == 'Pathfinder':
-                role_image = role_image.resize((40, 40), Image.Resampling.LANCZOS)
-                x = 1530 
-                y = 400
-                bg.paste(role_image, (x, y), mask=role_image)
-            if role_name == 'Ranger':
-                role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
-                x = 1625 
-                y = 370
-                bg.paste(role_image, (x, y), mask=role_image)
-            if role_name == 'Recon':
-                role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
-                x = 1625
-                y = 400
-                bg.paste(role_image, (x, y), mask=role_image)
-
-        except FileNotFoundError:
-            print(f"Image for role '{role_name}' not found. Skipping.")  
+    if patch_roles:
+       # Loop through roles
+        for index, role_name in enumerate(patch_roles):
+            try:
+                # Open ribbon/patch for the role
+                role_image = Image.open(patch_templates[role_name]).convert('RGBA')
     
+                # Optionally resize
+                if role_name == 'Pathfinder':
+                    role_image = role_image.resize((40, 40), Image.Resampling.LANCZOS)
+                    x = 1530 
+                    y = 400
+                    bg.paste(role_image, (x, y), mask=role_image)
+                if role_name == 'Ranger':
+                    role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
+                    x = 1625 
+                    y = 370
+                    bg.paste(role_image, (x, y), mask=role_image)
+                if role_name == 'Recon':
+                    role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
+                    x = 1625
+                    y = 400
+                    bg.paste(role_image, (x, y), mask=role_image)
+    
+            except FileNotFoundError:
+                print(f"Image for role '{role_name}' not found. Skipping.")  
+        
     ###################################################################################
     # Ribbon roles
     ribbon_width = 100
     ribbon_height = 35
     ribbons_per_row = 3
     
-    ribbons = []
-    for role in award_roles:
-        role_name = role
-        if role_name in award_templates:
-            img_path = award_templates[role_name]
-            img = Image.open(img_path)
-            ribbons.append(img)
+    if award_roles:
+        ribbons = []
+        for role in award_roles:
+            role_name = role
+            if role_name in award_templates:
+                img_path = award_templates[role_name]
+                img = Image.open(img_path)
+                ribbons.append(img)
     
-    if not ribbons:
-        print("You don't have any ribbons assigned to you")
-    
-    # Trim all ribbons first
-    ribbons = [trim(ribbon) for ribbon in ribbons]
-
-    # Count and calculate
-    num_ribbons = len(ribbons)
-    rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
-    rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
-    rack_height = rows * ribbon_height
-
-    # Create blank rack
-    rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
-
-    # Reverse ribbons for right-to-left, bottom-to-top stacking
-    ribbons = list(reversed(ribbons))
-
-    # Build the rack
-    for index, ribbon in enumerate(ribbons):
-        row = (rows - 1) - (index // ribbons_per_row)  # bottom up
-        col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
-
-        # Default x, y position
-        x = col * ribbon_width
-        y = row * ribbon_height
-
-        # Center the top row if incomplete
-        if row == 0:
-            ribbons_in_top_row = num_ribbons % ribbons_per_row
-            if ribbons_in_top_row == 0:
-                ribbons_in_top_row = ribbons_per_row
-
-            total_row_width = ribbons_in_top_row * ribbon_width
-            offset = (rack_width - total_row_width) // 2
-
-            x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
-        else:
-            x = col * ribbon_width
+        if not ribbons:
+            print("You don't have any ribbons assigned to you")
             
-        # Resize ribbon to fit exactly if needed
-        ribbon = ribbon.resize((ribbon_width, ribbon_height))
-
-        # Paste ribbon
-        rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
-
-    # Draw a black frame around the rack
-    draw = ImageDraw.Draw(rack)
-    draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+        # Trim all ribbons first
+        ribbons = [trim(ribbon) for ribbon in ribbons]
     
-    rackname = f"{member.name}_ribbons.png"
-    rack.save(rackname)
-
-    # Set Rack Location
-    rack_x = 1380
-    rack_y = 540 - rack_height + (rows * 20)
-
-    # Ribbon Scale by a factor 
-    rscale_factor = 0.6
-
-    # Calculate Ribbon new size
-    new_width = int(rack.width * rscale_factor)
-    new_height = int(rack.height * rscale_factor)
-
-    # Resize the rack
-    rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+        # Count and calculate
+        num_ribbons = len(ribbons)
+        rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+        rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+        rack_height = rows * ribbon_height
     
-    # Place the rack on the image
-    bg.paste(rack, (rack_x, rack_y), mask=rack)
+        # Create blank rack
+        rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+    
+        # Reverse ribbons for right-to-left, bottom-to-top stacking
+        ribbons = list(reversed(ribbons))
+
+        # Build the rack
+        for index, ribbon in enumerate(ribbons):
+            row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+            col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+
+            # Default x, y position
+            x = col * ribbon_width
+            y = row * ribbon_height
+
+            # Center the top row if incomplete
+            if row == 0:
+                ribbons_in_top_row = num_ribbons % ribbons_per_row
+                if ribbons_in_top_row == 0:
+                    ribbons_in_top_row = ribbons_per_row
+
+                total_row_width = ribbons_in_top_row * ribbon_width
+                offset = (rack_width - total_row_width) // 2
+
+                x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+            else:
+                x = col * ribbon_width
+            
+            # Resize ribbon to fit exactly if needed
+            ribbon = ribbon.resize((ribbon_width, ribbon_height))
+
+            # Paste ribbon
+            rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+        # Draw a black frame around the rack
+        draw = ImageDraw.Draw(rack)
+        draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+        rackname = f"{member.name}_ribbons.png"
+        rack.save(rackname)
+
+        # Set Rack Location
+        rack_x = 1380
+        rack_y = 540 - rack_height + (rows * 20)
+
+        # Ribbon Scale by a factor 
+        rscale_factor = 0.6
+
+        # Calculate Ribbon new size
+        new_width = int(rack.width * rscale_factor)
+        new_height = int(rack.height * rscale_factor)
+
+        # Resize the rack
+        rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+        # Place the rack on the image
+        bg.paste(rack, (rack_x, rack_y), mask=rack)
     
     ###################################################################################
     # Unit Coms
@@ -534,83 +544,84 @@ async def uniform(ctx):
     ribbon_height = 35
     ribbons_per_row = 3
     
-    ribbons = []
-    for role in uc_roles:
-        role_name = role
-        if role_name in unitcoms_templates:
-            img_path = unitcoms_templates[role_name]
-            img = Image.open(img_path)
-            ribbons.append(img)
+    if uc_roles:
+        ribbons = []
+        for role in uc_roles:
+            role_name = role
+            if role_name in unitcoms_templates:
+                img_path = unitcoms_templates[role_name]
+                img = Image.open(img_path)
+                ribbons.append(img)
     
-    if not ribbons:
-        print("You don't have any unit coms assigned to you")
+        if not ribbons:
+            print("You don't have any unit coms assigned to you")
     
-    # Trim all ribbons first
-    ribbons = [trim(ribbon) for ribbon in ribbons]
+        # Trim all ribbons first
+        ribbons = [trim(ribbon) for ribbon in ribbons]
 
-    # Count and calculate
-    num_ribbons = len(ribbons)
-    rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
-    rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
-    rack_height = rows * ribbon_height
+        # Count and calculate
+        num_ribbons = len(ribbons)
+        rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+        rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+        rack_height = rows * ribbon_height
 
-    # Create blank rack
-    rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+        # Create blank rack
+        rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
 
-    # Reverse ribbons for right-to-left, bottom-to-top stacking
-    ribbons = list(reversed(ribbons))
+        # Reverse ribbons for right-to-left, bottom-to-top stacking
+        ribbons = list(reversed(ribbons))
 
-    # Build the rack
-    for index, ribbon in enumerate(ribbons):
-        row = (rows - 1) - (index // ribbons_per_row)  # bottom up
-        col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+        # Build the rack
+        for index, ribbon in enumerate(ribbons):
+            row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+            col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
 
-        # Default x, y position
-        x = col * ribbon_width
-        y = row * ribbon_height
-
-        # Center the top row if incomplete
-        if row == 0:
-            ribbons_in_top_row = num_ribbons % ribbons_per_row
-            if ribbons_in_top_row == 0:
-                ribbons_in_top_row = ribbons_per_row
-
-            total_row_width = ribbons_in_top_row * ribbon_width
-            offset = (rack_width - total_row_width) // 2
-
-            x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
-        else:
+            # Default x, y position
             x = col * ribbon_width
+            y = row * ribbon_height
+
+            # Center the top row if incomplete
+            if row == 0:
+                ribbons_in_top_row = num_ribbons % ribbons_per_row
+                if ribbons_in_top_row == 0:
+                    ribbons_in_top_row = ribbons_per_row
+
+                total_row_width = ribbons_in_top_row * ribbon_width
+                offset = (rack_width - total_row_width) // 2
+
+                x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+            else:
+                x = col * ribbon_width
             
-        # Resize ribbon to fit exactly if needed
-        ribbon = ribbon.resize((ribbon_width, ribbon_height))
+            # Resize ribbon to fit exactly if needed
+            ribbon = ribbon.resize((ribbon_width, ribbon_height))
 
-        # Paste ribbon
-        rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+            # Paste ribbon
+            rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
 
-    # Draw a black frame around the rack
-    draw = ImageDraw.Draw(rack)
-    draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+        # Draw a black frame around the rack
+        draw = ImageDraw.Draw(rack)
+        draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
     
-    rackname = f"{member.name}_ribbons.png"
-    rack.save(rackname)
+        rackname = f"{member.name}_ribbons.png"
+        rack.save(rackname)
 
-    # Set Rack Location
-    rack_x = 1010
-    rack_y = 530 - rack_height + (rows * 20)
+        # Set Rack Location
+        rack_x = 1010
+        rack_y = 530 - rack_height + (rows * 20)
 
-    # Ribbon Scale by a factor 
-    rscale_factor = 0.6
+        # Ribbon Scale by a factor 
+        rscale_factor = 0.6
 
-    # Calculate Ribbon new size
-    new_width = int(rack.width * rscale_factor)
-    new_height = int(rack.height * rscale_factor)
+        # Calculate Ribbon new size
+        new_width = int(rack.width * rscale_factor)
+        new_height = int(rack.height * rscale_factor)
 
-    # Resize the rack
-    rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+        # Resize the rack
+        rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
     
-    # Place the rack on the image
-    bg.paste(rack, (rack_x, rack_y), mask=rack)
+        # Place the rack on the image
+        bg.paste(rack, (rack_x, rack_y), mask=rack)
     
     ##################################################################################
     # Dynamic starting points for qual area
