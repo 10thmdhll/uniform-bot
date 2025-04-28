@@ -66,7 +66,7 @@ Make sure your bot has permission to read roles, message history and send messag
 ## Usage
 
 ### Commands
-- `/uniform @user` - Generates a complete uniform image based on the mentioned user's roles.
+- `/uniform` - Generates a complete uniform image based on the user's roles.
 
 ### Role-Image Mapping
 Role names must exactly match or map to the entries defined in `rank_templates` dictionary. Special handling is included for ranks such as:
