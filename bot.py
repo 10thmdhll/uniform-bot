@@ -6,196 +6,219 @@ import aiohttp
 import asyncio
 from dotenv import load_dotenv
 
+# Functions
+def trim(im):
+    """Trim transparent edges of a ribbon."""
+    bbox = im.getbbox()
+    if bbox:
+        return im.crop(bbox)
+    return im
+    
 # Load environment variables
 load_dotenv()
 
 # === Template definitions ===
 rank_templates = {
-    "Col.": {"Rank": "Colonel", "icon_position": (660,420)},
-    "Lt. Col.": {"Rank": "Lieutenant Colonel", "icon_position": (660,420)},
-    "CSM.": {"Rank": "Command Sergeant Major", "icon_position": (625,525)},
-    "Maj.": {"Rank": "Major", "icon_position": (660,420)},
-    "Cpt.": {"Rank": "Captain", "icon_position": (660,420)},
-    "SGM.": {"Rank": "Sergeant Major", "icon_position": (625,525)},
-    "1st Sgt.": {"Rank": "First Sergeant", "icon_position": (625,525)},
-    "M/Sgt.": {"Rank": "Master Sergeant", "icon_position": (625,525)},
-    "1Lt.": {"Rank": "First Lieutenant", "icon_position": (660,420)},
-    "CWO.": {"Rank": "Chief Warrant Officer", "icon_position": (660,420)},
-    "2Lt.": {"Rank": "Second Lieutenant", "icon_position": (660,420)},
-    "T/Sgt.": {"Rank": "Technical Sergeant", "icon_position": (625,525)},
-    "WO.": {"Rank": "Warrant Officer", "icon_position": (660,420)},
-    "S/Sgt.": {"Rank": "Staff Sergeant", "icon_position": (625,525)},
-    "Sgt.": {"Rank": "Sergeant", "icon_position": (625,525)},
-    "Cpl.": {"Rank": "Corporal", "icon_position": (625,525)},
-    "T/3": {"Rank": "Technician Third Grade", "icon_position": (625,525)},
-    "T/4": {"Rank": "Technician Fourth Grade", "icon_position": (625,525)},
-    "T/5": {"Rank": "Technician Fifth Grade", "icon_position": (625,525)},
-    "Pfc.": {"Rank": "Private First Class", "icon_position": (625,525)},
-    "Pvt.": {"Rank": "Private", "icon_position": (625,525)}
+    'Col.': 'ranks/COL.png',
+    'Lt. Col.': 'ranks/LTC.png',
+    'CSM.': 'ranks/CSM.png',
+    'Maj.': 'ranks/MAJ.png',
+    'Cpt.': 'ranks/CPT.png',
+    'SGM.': 'ranks/SGM.png',
+    '1st Sgt.': 'ranks/1STSGT.png',
+    'M/Sgt.': 'ranks/MSGT.png',
+    '1Lt.': 'ranks/1LT.png',
+    'CWO.': 'ranks/CWO.png',
+    '2Lt.': 'ranks/2LT.png',
+    'T/Sgt.': 'ranks/TSGT.png',
+    'WO.': 'ranks/WO.png',
+    'S/Sgt.': 'ranks/SSGT.png',
+    'Sgt.': 'ranks/SGT.png',
+    'Cpl.': 'ranks/CPL.png',
+    'T/3': 'ranks/T3.png',
+    'T/4': 'ranks/T4.png',
+    'T/5': 'ranks/T5.png',
+    'Pfc.': 'ranks/PFC.png',
+    'Pvt.': 'ranks/PVT.png'
 }
 assignment_templates = {
-    "Division Command": {"Assignment": "Division Command", "icon_position": (100,600)},
-    "Battalion Leadership": {"Assignment": "Battalion Command", "icon_position": (100,600)},
-    "Fox Company Leadership": {"Assignment": "Fox Company Command", "icon_position": (100,600)},
-    "FP1 - Leadership": {"Assignment": "Fox Company First Platoon Command", "icon_position": (100,600)},
-    "FP2 - Leadership": {"Assignment": "Fox Company Second Platoon Command", "icon_position": (100,600)},
-    "FP3 - Leadership": {"Assignment": "Fox Company Third Platoon Command", "icon_position": (100,600)},
-    "FP1S1": {"Assignment": "Fox Company First Platoon First Squad", "icon_position": (100,600)},
-    "FP1S2": {"Assignment": "Fox Company First Platoon Second Squad", "icon_position": (100,600)},
-    "FP1S3": {"Assignment": "Fox Company First Platoon Third Squad", "icon_position": (100,600)},
-    "FP1S4": {"Assignment": "Fox Company First Platoon Fourth Squad", "icon_position": (100,600)},
-    "FP2S1": {"Assignment": "Fox Company Second Platoon First Squad", "icon_position": (100,600)},
-    "FP2S2": {"Assignment": "Fox Company Second Platoon Second Squad", "icon_position": (100,600)},
-    "FP2S3": {"Assignment": "Fox Company Second Platoon Third Squad", "icon_position": (100,600)},
-    "FP2S4": {"Assignment": "Fox Company Second Platoon Fourth Squad", "icon_position": (100,600)},
-    "FP3S1": {"Assignment": "Fox Company Third Platoon First Squad", "icon_position": (100,600)},
-    "FP3S2": {"Assignment": "Fox Company Third Platoon Second Squad", "icon_position": (100,600)},
-    "FP3S3": {"Assignment": "Fox Company Third Platoon Third Squad", "icon_position": (100,600)},
-    "FP3S4": {"Assignment": "Fox Company Third Platoon Fourth Squad", "icon_position": (100,600)}
+    "Division Command": {"Assignment": "Division Command"},
+    "Battalion Leadership": {"Assignment": "Battalion Command"},
+    "Fox Company Leadership": {"Assignment": "Fox Company Command"},
+    "FP1 - Leadership": {"Assignment": "Fox Company First Platoon Command"},
+    "FP2 - Leadership": {"Assignment": "Fox Company Second Platoon Command"},
+    "FP3 - Leadership": {"Assignment": "Fox Company Third Platoon Command"},
+    "FP1S1": {"Assignment": "Fox Company First Platoon First Squad"},
+    "FP1S2": {"Assignment": "Fox Company First Platoon Second Squad"},
+    "FP1S3": {"Assignment": "Fox Company First Platoon Third Squad"},
+    "FP1S4": {"Assignment": "Fox Company First Platoon Fourth Squad"},
+    "FP2S1": {"Assignment": "Fox Company Second Platoon First Squad"},
+    "FP2S2": {"Assignment": "Fox Company Second Platoon Second Squad"},
+    "FP2S3": {"Assignment": "Fox Company Second Platoon Third Squad"},
+    "FP2S4": {"Assignment": "Fox Company Second Platoon Fourth Squad"},
+    "FP3S1": {"Assignment": "Fox Company Third Platoon First Squad"},
+    "FP3S2": {"Assignment": "Fox Company Third Platoon Second Squad"},
+    "FP3S3": {"Assignment": "Fox Company Third Platoon Third Squad"},
+    "FP3S4": {"Assignment": "Fox Company Third Platoon Fourth Squad"}
 }
-award_templates = {
-    "Founders Silver Ribbon": {"Award": "Founders Silver Ribbon", "icon_position": (980,480)},
-    "Founders Ribbon": {"Award": "Founders Ribbon", "icon_position": (980,480)},
-    "Distinguished Service Cross": {"Award": "Distinguished Service Cross", "icon_position": (1030,480)},
-    "Distinguished Service Medal": {"Award": "Distinguished Service Medal", "icon_position": (980,500)},
-    "Silver Star": {"Award": "Silver Star", "icon_position": (1030,500)},
-    "Bronze Star - 10": {"Award": "Bronze Star - 10", "icon_position": (980,520)},
-    "Bronze Star - 9": {"Award": "Bronze Star - 9", "icon_position": (980,520)},
-    "Bronze Star - 8": {"Award": "Bronze Star - 8", "icon_position": (980,520)},
-    "Bronze Star - 7": {"Award": "Bronze Star - 7", "icon_position": (980,520)},
-    "Bronze Star - 6": {"Award": "Bronze Star - 6", "icon_position": (980,520)},
-    "Bronze Star - 5": {"Award": "Bronze Star - 5", "icon_position": (980,520)},
-    "Bronze Star - 4": {"Award": "Bronze Star - 4", "icon_position": (980,520)},
-    "Bronze Star - 3": {"Award": "Bronze Star - 3", "icon_position": (980,520)},
-    "Bronze Star - 2": {"Award": "Bronze Star - 2", "icon_position": (980,520)},
-    "Bronze Star - 1": {"Award": "Bronze Star - 1", "icon_position": (980,520)},
-    "Purple Heart - 10": {"Award": "Purple Heart - 10", "icon_position": (1030,520)},
-    "Purple Heart - 9": {"Award": "Purple Heart - 9", "icon_position": (1030,520)},
-    "Purple Heart - 8": {"Award": "Purple Heart - 8", "icon_position": (1030,520)},
-    "Purple Heart - 7": {"Award": "Purple Heart - 7", "icon_position": (1030,520)},
-    "Purple Heart - 6": {"Award": "Purple Heart - 6", "icon_position": (1030,520)},
-    "Purple Heart - 5": {"Award": "Purple Heart - 5", "icon_position": (1030,520)},
-    "Purple Heart - 4": {"Award": "Purple Heart - 4", "icon_position": (1030,520)},
-    "Purple Heart - 3": {"Award": "Purple Heart - 3", "icon_position": (1030,520)},
-    "Purple Heart - 2": {"Award": "Purple Heart - 2", "icon_position": (1030,520)},
-    "Purple Heart - 1": {"Award": "Purple Heart - 1", "icon_position": (1030,520)},
-    "Meritorious Service Medal - 5": {"Award": "Meritorious Service Medal - 5", "icon_position": (930,540)},
-    "Meritorious Service Medal - 4": {"Award": "Meritorious Service Medal - 4", "icon_position": (930,540)},
-    "Meritorious Service Medal - 3": {"Award": "Meritorious Service Medal - 3", "icon_position": (930,540)},
-    "Meritorious Service Medal - 2": {"Award": "Meritorious Service Medal - 2", "icon_position": (930,540)},
-    "Meritorious Service Medal - 1": {"Award": "Meritorious Service Medal - 1", "icon_position": (930,540)},
-    "Army Commendation Medal - 10": {"Award": "Army Commendation Medal - 10", "icon_position": (980,540)},
-    "Army Commendation Medal - 9": {"Award": "Army Commendation Medal - 9", "icon_position": (980,540)},
-    "Army Commendation Medal - 8": {"Award": "Army Commendation Medal - 8", "icon_position": (980,540)},
-    "Army Commendation Medal - 7": {"Award": "Army Commendation Medal - 7", "icon_position": (980,540)},
-    "Army Commendation Medal - 6": {"Award": "Army Commendation Medal - 6", "icon_position": (980,540)},
-    "Army Commendation Medal - 5": {"Award": "Army Commendation Medal - 5", "icon_position": (980,540)},
-    "Army Commendation Medal - 4": {"Award": "Army Commendation Medal - 4", "icon_position": (980,540)},
-    "Army Commendation Medal - 3": {"Award": "Army Commendation Medal - 3", "icon_position": (980,540)},
-    "Army Commendation Medal - 2": {"Award": "Army Commendation Medal - 2", "icon_position": (980,540)},
-    "Army Commendation Medal - 1": {"Award": "Army Commendation Medal - 1", "icon_position": (980,540)},
-    "Army Achievement Medal - 10": {"Award": "Army Achievement Medal - 10", "icon_position": (1030,540)},
-    "Army Achievement Medal - 9": {"Award": "Army Achievement Medal - 9", "icon_position": (1030,540)},
-    "Army Achievement Medal - 8": {"Award": "Army Achievement Medal - 8", "icon_position": (1030,540)},
-    "Army Achievement Medal - 7": {"Award": "Army Achievement Medal - 7", "icon_position": (1030,540)},
-    "Army Achievement Medal - 6": {"Award": "Army Achievement Medal - 6", "icon_position": (1030,540)},
-    "Army Achievement Medal - 5": {"Award": "Army Achievement Medal - 5", "icon_position": (1030,540)},
-    "Army Achievement Medal - 4": {"Award": "Army Achievement Medal - 4", "icon_position": (1030,540)},
-    "Army Achievement Medal - 3": {"Award": "Army Achievement Medal - 3", "icon_position": (1030,540)},
-    "Army Achievement Medal - 2": {"Award": "Army Achievement Medal - 2", "icon_position": (1030,540)},
-    "Army Achievement Medal - 1": {"Award": "Army Achievement Medal - 1", "icon_position": (1030,540)},
-    "Army Good Conduct Medal - 10": {"Award": "Army Good Conduct Medal - 10", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 9": {"Award": "Army Good Conduct Medal - 9", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 8": {"Award": "Army Good Conduct Medal - 8", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 7": {"Award": "Army Good Conduct Medal - 7", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 6": {"Award": "Army Good Conduct Medal - 6", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 5": {"Award": "Army Good Conduct Medal - 5", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 4": {"Award": "Army Good Conduct Medal - 4", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 3": {"Award": "Army Good Conduct Medal - 3", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 2": {"Award": "Army Good Conduct Medal - 2", "icon_position": (930,560)},
-    "Army Good Conduct Medal - 1": {"Award": "Army Good Conduct Medal - 1", "icon_position": (930,560)},
-    "American Defense Service Medal": {"Award": "American Defense Service Medal", "icon_position": (980,560)},
-    "Army Service Ribbon": {"Award": "Army Service Ribbon", "icon_position": (1030,600)},
-    "American Campaign Medal - 5": {"Award": "American Campaign Medal - 5", "icon_position": (1030,580)},
-    "American Campaign Medal - 4": {"Award": "American Campaign Medal - 4", "icon_position": (1030,580)},
-    "American Campaign Medal - 3": {"Award": "American Campaign Medal - 3", "icon_position": (1030,580)},
-    "American Campaign Medal - 2": {"Award": "American Campaign Medal - 2", "icon_position": (1030,580)},
-    "American Campaign Medal - 1": {"Award": "American Campaign Medal - 1", "icon_position": (1030,580)},
-    "World War II Victory Medal": {"Award": "World War II Victory Medal", "icon_position": (930,580)},
-    "Gold Lifesaving Medal": {"Award": "Gold Lifesaving Medal", "icon_position": (930,620)},
-    "Silver Lifesaving Medal": {"Award": "Silver Lifesaving Medal", "icon_position": (1030,620)},
-    "Medal of Humane Action": {"Award": "Medal of Humane Action", "icon_position": (1030,580)},
-    "Army of Occupation Medal": {"Award": "Army of Occupation Medal", "icon_position": (980,580)},
-    "Armed Forces Service Medal": {"Award": "Armed Forces Service Medal", "icon_position": (930,600)},
-    "Combat Infantryman Badge": {"Award": "Combat Infantryman Badge", "icon_position": (1000,440)},
-    "Expert Infantryman Badge": {"Award": "Expert Infantryman Badge", "icon_position": (1000,440)},
-    "NCO Development Ribbon - Infantry": {"Award": "NCO Development Ribbon - Infantry", "icon_position": (980,600)},
-    "NCO Development Ribbon - Armor": {"Award": "NCO Development Ribbon - Armor", "icon_position": (980,620)},
-    "ReClimb Unit Commendation": {"Award": "ReClimb Unit Commendation", "icon_position": (735,590)},
-    "Ranger": {"Award": "Ranger", "icon_position": (1110,460)},
-    "Recon": {"Award": "Recon", "icon_position": (1110,470)},
-    "Pathfinder": {"Award": "Pathfinder", "icon_position": (1110,480)},
-    "Driver - Tank Weapons": {"Award": "Driver - Tank Weapons", "icon_position": (800,825)},
-    "Driver - Tracked": {"Award": "Driver - Tracked", "icon_position": (900,825)},
-    "Driver - Wheeled": {"Award": "Driver - Wheeled", "icon_position": (1000,825)},
-    "Driver - Mechanic": {"Award": "Driver - Mechanic", "icon_position": (1100,825)},
-    "Expert - Artillery": {"Award": "Expert - Artillery", "icon_position": (800,950)},
-    "Expert - Anti Tank": {"Award": "Expert - Anti Tank", "icon_position": (900,950)},
-    "Expert - Auto Rifle": {"Award": "Expert - Auto Rifle", "icon_position": (1000,950)},
-    "Expert - Grenade": {"Award": "Expert - Grenade", "icon_position": (1100,950)},
-    "Expert - MG": {"Award": "Expert - MG", "icon_position": (700,1075)},
-    "Expert - Pistol": {"Award": "Expert - Pistol", "icon_position": (800,1075)},
-    "Expert - Rifle": {"Award": "Expert - Rifle", "icon_position": (900,1075)},
-    "Expert - Scoped Rifle": {"Award": "Expert - Scoped Rifle", "icon_position": (1000,1075)},
-    "Expert - SMG": {"Award": "Expert - SMG", "icon_position": (1100,1075)},
-    "Sharpshooter - Artillery": {"Award": "Sharpshooter - Artillery", "icon_position": (800,950)},
-    "Sharpshooter - Anti Tank": {"Award": "Sharpshooter - Anti Tank", "icon_position": (900,950)},
-    "Sharpshooter - Auto Rifle": {"Award": "Sharpshooter - Auto Rifle", "icon_position": (1000,950)},
-    "Sharpshooter - Grenade": {"Award": "Sharpshooter - Grenade", "icon_position": (1100,950)},
-    "Sharpshooter - MG": {"Award": "Sharpshooter - MG", "icon_position": (700,1075)},
-    "Sharpshooter - Pistol": {"Award": "Sharpshooter - Pistol", "icon_position": (800,1075)},
-    "Sharpshooter - Rifle": {"Award": "Sharpshooter - Rifle", "icon_position": (900,1075)},
-    "Sharpshooter - Scoped Rifle": {"Award": "Sharpshooter - Scoped Rifle", "icon_position": (1000,1075)},
-    "Sharpshooter - SMG": {"Award": "Sharpshooter - SMG", "icon_position": (1100,1075)},
-    "Marksman - Artillery": {"Award": "Marksman - Artillery", "icon_position": (800,950)},
-    "Marksman - Anti Tank": {"Award": "Marksman - Anti Tank", "icon_position": (900,950)},
-    "Marksman - Auto Rifle": {"Award": "Marksman - Auto Rifle", "icon_position": (1000,950)},
-    "Marksman - Grenade": {"Award": "Marksman - Grenade", "icon_position": (1100,950)},
-    "Marksman - MG": {"Award": "Marksman - MG", "icon_position": (700,1075)},
-    "Marksman - Pistol": {"Award": "Marksman - Pistol", "icon_position": (800,1075)},
-    "Marksman - Rifle": {"Award": "Marksman - Rifle", "icon_position": (900,1075)},
-    "Marksman - Scoped Rifle": {"Award": "Marksman - Scoped Rifle", "icon_position": (1000,1075)},
-    "Marksman - SMG": {"Award": "Marksman - SMG", "icon_position": (1100,1075)}
+unitcoms_templates = {
+    "Founders Silver Ribbon": 'awards/Founders1.png',
+    "Founders Ribbon": 'awards/Founders.png',
+    "ReClimb Unit Commendation": 'awards/ReClimb.png',
 }
 
-# === Utility: download role icon with caching ===
-async def download_role_icon(role):
-    if role.icon:
-        fname = f"role_icon_{role.id}.png"
-        if not os.path.exists(fname):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(role.icon.url) as resp:
-                    if resp.status == 200:
-                        with open(fname, 'wb') as f:
-                            f.write(await resp.read())
-        return fname
-    return None
+eib_templates = {
+    'Combat Infantryman Badge': 'awards/CIB.png',
+    'Expert Infantryman Badge': 'awards/EIB.png'
+}
+
+patch_templates = {
+    "Ranger": 'awards/Ranger.png',
+    "Recon": 'awards/Recon.png',
+    "Pathfinder": 'awards/PF.png'
+}
+
+driver_templates = {
+    "Driver - Tank Weapons": 'awards/TankWeapons.png',
+    "Driver - Tracked": 'awards/DriverT.png',
+    "Driver - Wheeled": 'awards/DriverW.png',
+    "Driver - Mechanic": 'awards/Mechanic.png'
+}
+
+equal_templates = {
+    "Expert - Artillery": 'awards/FieldArtillery.png',
+    "Expert - Anti Tank": 'awards/AT.png',
+    "Expert - Auto Rifle": 'awards/AutoRifle.png',
+    "Expert - Grenade": 'awards/Grenade.png',
+    "Expert - MG": 'awards/MG.png',
+    "Expert - Pistol": 'awards/Pistol.png',
+    "Expert - Rifle": 'awards/Rifle.png',
+    "Expert - Scoped Rifle": 'awards/ScopedRifle.png',
+    "Expert - SMG": 'awards/SMG.png'
+}
+
+squal_templates = {
+    "Sharpshooter - Artillery": 'awards/FieldArtillery.png',
+    "Sharpshooter - Anti Tank": 'awards/AT.png',
+    "Sharpshooter - Auto Rifle": 'awards/AutoRifle.png',
+    "Sharpshooter - Grenade": 'awards/Grenade.png',
+    "Sharpshooter - MG": 'awards/MG.png',
+    "Sharpshooter - Pistol": 'awards/Pistol.png',
+    "Sharpshooter - Rifle": 'awards/Rifle.png',
+    "Sharpshooter - Scoped Rifle": 'awards/ScopedRifle.png',
+    "Sharpshooter - SMG": 'awards/SMG.png'
+}
+
+mqual_templates = {
+    "Marksman - Artillery": 'awards/FieldArtillery.png',
+    "Marksman - Anti Tank": 'awards/AT.png',
+    "Marksman - Auto Rifle": 'awards/AutoRifle.png',
+    "Marksman - Grenade": 'awards/Grenade.png',
+    "Marksman - MG": 'awards/MG.png',
+    "Marksman - Pistol": 'awards/Pistol.png',
+    "Marksman - Rifle": 'awards/Rifle.png',
+    "Marksman - Scoped Rifle": 'awards/ScopedRifle.png',
+    "Marksman - SMG": 'awards/SMG.png'
+}
+
+award_templates = {
+    'Distinguished Service Cross': 'awards/DSC1.png',
+    'Distinguished Service Medal': 'awards/DSM1.png',
+    'Silver Star': 'awards/SS1.png', 
+    'Bronze Star - 10': 'awards/BS10.png',
+    'Bronze Star - 9': 'awards/BS9.png',
+    'Bronze Star - 8': 'awards/BS8.png',
+    'Bronze Star - 7': 'awards/BS7.png',
+    'Bronze Star - 6': 'awards/BS6.png',
+    'Bronze Star - 5': 'awards/BS5.png',
+    'Bronze Star - 4': 'awards/BS4.png',
+    'Bronze Star - 3': 'awards/BS3.png',
+    'Bronze Star - 2': 'awards/BS2.png',
+    'Bronze Star - 1': 'awards/BS1.png',
+    'Purple Heart - 10': 'awards/PH9.png',
+    'Purple Heart - 9': 'awards/PH9.png',
+    'Purple Heart - 8': 'awards/PH8.png',
+    'Purple Heart - 7': 'awards/PH7.png',
+    'Purple Heart - 6': 'awards/PH6.png',
+    'Purple Heart - 5': 'awards/PH5.png',
+    'Purple Heart - 4': 'awards/PH4.png',
+    'Purple Heart - 3': 'awards/PH3.png',
+    'Purple Heart - 2': 'awards/PH2.png',
+    'Purple Heart - 1': 'awards/PH1.png',
+    'Meritorious Service Medal - 5': 'awards/MSM5.png',
+    'Meritorious Service Medal - 4': 'awards/MSM4.png',
+    'Meritorious Service Medal - 3': 'awards/MSM3.png',
+    'Meritorious Service Medal - 2': 'awards/MSM2.png',
+    'Meritorious Service Medal - 1': 'awards/MSM1.png',
+    'Army Commendation Medal - 10': 'awards/ACOM10.png',
+    'Army Commendation Medal - 9': 'awards/ACOM9.png',
+    'Army Commendation Medal - 8': 'awards/ACOM8.png',
+    'Army Commendation Medal - 7': 'awards/ACOM7.png',
+    'Army Commendation Medal - 6': 'awards/ACOM6.png',
+    'Army Commendation Medal - 5': 'awards/ACOM5.png',
+    'Army Commendation Medal - 4': 'awards/ACOM4.png',
+    'Army Commendation Medal - 3': 'awards/ACOM3.png',
+    'Army Commendation Medal - 2': 'awards/ACOM2.png',
+    'Army Commendation Medal - 1': 'awards/ACOM1.png',
+    'Army Achievement Medal - 10': 'awards/AAM10.png',
+    'Army Achievement Medal - 9': 'awards/AAM9.png',
+    'Army Achievement Medal - 8': 'awards/AAM8.png',
+    'Army Achievement Medal - 7': 'awards/AAM7.png',
+    'Army Achievement Medal - 6': 'awards/AAM6.png',
+    'Army Achievement Medal - 5': 'awards/AAM5.png',
+    'Army Achievement Medal - 4': 'awards/AAM4.png',
+    'Army Achievement Medal - 3': 'awards/AAM3.png',
+    'Army Achievement Medal - 2': 'awards/AAM2.png',
+    'Army Achievement Medal - 1': 'awards/AAM1.png',
+    'Army Good Conduct Medal - 10': 'awards/AGC10.png',
+    'Army Good Conduct Medal - 9': 'awards/AGC9.png',
+    'Army Good Conduct Medal - 8': 'awards/AGC8.png',
+    'Army Good Conduct Medal - 7': 'awards/AGC7.png',
+    'Army Good Conduct Medal - 6': 'awards/AGC6.png',
+    'Army Good Conduct Medal - 5': 'awards/AGC5.png',
+    'Army Good Conduct Medal - 4': 'awards/AGC4.png',
+    'Army Good Conduct Medal - 3': 'awards/AGC3.png',
+    'Army Good Conduct Medal - 2': 'awards/AGC2.png',
+    'Army Good Conduct Medal - 1': 'awards/AGC1.png',
+    'American Defense Service Medal': 'awards/AD.png',
+    'American Campaign Medal - 5': 'awards/AC5.png',
+    'American Campaign Medal - 4': 'awards/AC4.png',
+    'American Campaign Medal - 3': 'awards/AC3.png',
+    'American Campaign Medal - 2': 'awards/AC2.png',
+    'American Campaign Medal - 1': 'awards/AC1.png',
+    'World War II Victory Medal': 'awards/WWIIV.png',
+    'Army of Occupation Medal': 'awards/Occupation.png',
+    "Gold Lifesaving Medal": 'awards/GLS.png',
+    "Silver Lifesaving Medal": 'awards/SLS.png',
+    'Medal of Humane Action': 'awards/HA.png',
+    'Armed Forces Service Medal': 'awards/AFSM.png',
+    'NCO Development Ribbon - Infantry': 'awards/NCO.png',
+    'NCO Development Ribbon - Armor': 'awards/NCOArmor.png',
+    'Army Service Ribbon': 'awards/ASR.png'
+}
 
 # === Generate uniform card image ===
-def generate_uniform_card(user_name, rank_role, rank_data, assign_role, assign_data, award_roles, role_icons, filename):
-    width, height = 1200, 1200
-    img = Image.new("RGB", (width, height), color=(34, 45, 30))
+def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award_roles, eib_roles, uc_roles, patch_roles, driver_roles, equal_roles, squal_roles, mqual_roles, filename):
+    width, height = 1800, 1200
+    
+    # Background Color
+    #img = Image.new("RGB", (width, height), color=(34, 45, 30))
+    img = Image.new("RGB", (width, height), color=(0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     # Draw background silhouette first so icons appear on top
+    assign_value = assign_data.get("Assignment", "")
     armor_assigned = ["Fox Company Third Platoon First Squad", "Fox Company Third Platoon Second Squad", "Fox Company Third Platoon Third Squad", "Fox Company Third Platoon Fourth Squad"]
     
-    
-    sil_path = "Infantry.png"
+    if assign_value in armor_assigned:
+        sil_path = "Armor.png"
+    else:
+        sil_path = "Infantry.png"
+        
     if os.path.exists(sil_path):
         try:
-            sil = Image.open(sil_path).resize((600, 800))
-            img.paste(sil, (600, 380), sil.convert("RGBA"))
+            sil = Image.open(sil_path).resize((1024, 1536))
+            img.paste(sil, (800, 100), sil.convert("RGBA"))
         except Exception:
             pass
 
@@ -213,77 +236,76 @@ def generate_uniform_card(user_name, rank_role, rank_data, assign_role, assign_d
     y = 80
 
     # Rank section
-    if rank_role and rank_data:
-        # Draw rank text
-        rank_value = rank_data.get("Rank", "")
-        draw.text((40, y), f"Rank: {rank_value}", fill="white", font=text_font)
-        y += 40
-        # Draw rank icon if exists
-        shoulder_list = ["Colonel", "Lieutenant Colonel", "Major", "Captain", "Chief Warrant Officer", "Warrant Officer","First Lieutenant", "Second Lieutenant"]
-        icon_path = role_icons.get(rank_role)
-        icon_pos = rank_data.get("icon_position", (20, y))
-        if icon_path and os.path.exists(icon_path):
-            if rank_value in shoulder_list:
-                icon_img = Image.open(icon_path).resize((40, 40))
-            else:
-                icon_img = Image.open(icon_path).resize((80, 80))
-                
-            img.paste(icon_img, icon_pos, icon_img.convert("RGBA"))
+    if rank_roles:
+        for rank_name in rank_roles:
+            draw.text((40, y), f"Rank: {rank_name}", fill="white", font=header_font)
+            y += 30     
+            y += 40
 
     # Assignment section
     if assign_role and assign_data:
-        y += 60
+        y += 40
         assign_value = assign_data.get("Assignment", "")
-        draw.text((40, y), f"Assignment: {assign_value}", fill="white", font=text_font)
-        # Draw assignment icon
-        icon_path = role_icons.get(assign_role)
-        icon_pos = assign_data.get("icon_position", (20, y))
-     #   if icon_path and os.path.exists(icon_path):
-     #       icon_img = Image.open(icon_path).resize((40, 40))
-     #       img.paste(icon_img, icon_pos, icon_img.convert("RGBA"))
+        draw.text((40, y), f"Assignment: {assign_value}", fill="white", font=header_font)
         y += 40
 
-    # Awards (other roles) section
+    # Awards section
     y += 60
-    draw.text((40, y), "Awards:", fill="white", font=text_font)
+    draw.text((40, y), "Awards:", fill="white", font=header_font)
     y += 40
     
-    # List award names below icons
+    # List award names text
     list_y = y
+    
+    # List EIB
+    if eib_roles:
+        for eib in eib_roles:
+            draw.text((40, list_y), f"- {eib}", fill="white", font=small_font)
+            list_y += 30     
+            y += 40
+    
+    # List Ribbons    
     for aw in award_roles:
         draw.text((40, list_y), f"- {aw}", fill="white", font=small_font)
-        list_y += 30
+        list_y += 30     
+        y += 40
     
-    large_awards = ["Driver - Tank Weapons", "Driver - Tracked", "Driver - Wheeled", "Driver - Mechanic"
-        , "Marksman - Artillery","Marksman - Anti Tank", "Marksman - Auto Rifle", "Marksman - Grenade", "Marksman - MG"
-        , "Marksman - Pistol", "Marksman - Rifle", "Marksman - Scoped Rifle", "Marksman - SMG"
-        , "Sharpshooter - Artillery", "Sharpshooter - Anti Tank", "Sharpshooter - Auto Rifle", "Sharpshooter - Grenade", "Sharpshooter - MG"
-        , "Sharpshooter - Pistol", "Sharpshooter - Rifle", "Sharpshooter - Scoped Rifle", "Sharpshooter - SMG"
-        , "Expert - Artillery", "Expert - Anti Tank", "Expert - Auto Rifle", "Expert - Grenade", "Expert - MG"
-        , "Expert - Pistol", "Expert - Rifle", "Expert - Scoped Rifle", "Expert - SMG"        
-        ]
-        
-    double_length_awards = ["Combat Infantryman Badge","Expert Infantryman Badge"]
-    
-    for aw in award_roles:
-        # Draw award icon
-        icon_path = role_icons.get(aw)
-        icon_pos = award_templates.get(aw, {}).get("icon_position", (20, y))
-        if icon_path and os.path.exists(icon_path):
-            if aw in large_awards:
-                icon_img = Image.open(icon_path).resize((100, 80))
-            
-            else:
-                if aw in double_length_awards:
-                    icon_img = Image.open(icon_path).resize((100, 40))
-                
-                else:
-                    icon_img = Image.open(icon_path).resize((50, 20))
-                
-        img.paste(icon_img, icon_pos, icon_img.convert("RGBA"))
-        
+    # List Patches
+    for p1 in patch_roles:
+        draw.text((40, list_y), f"- {p1}", fill="white", font=small_font)
+        list_y += 30     
         y += 40
         
+    # List Unit Coms
+    for uc1 in uc_roles:
+        draw.text((40, list_y), f"- {uc1}", fill="white", font=small_font)
+        list_y += 30     
+        y += 40
+        
+    # List Driver Quals
+    for dr1 in driver_roles:
+        draw.text((40, list_y), f"- {dr1}", fill="white", font=small_font)
+        list_y += 30     
+        y += 40
+    
+    # List Expert Quals
+    for eq1 in equal_roles:
+        draw.text((40, list_y), f"- {eq1}", fill="white", font=small_font)
+        list_y += 30     
+        y += 40
+        
+    # List Sharpshooter Quals
+    for ss1 in squal_roles:
+        draw.text((40, list_y), f"- {ss1}", fill="white", font=small_font)
+        list_y += 30     
+        y += 40
+        
+    # List Marksman Quals
+    for mq1 in mqual_roles:
+        draw.text((40, list_y), f"- {mq1}", fill="white", font=small_font)
+        list_y += 30     
+        y += 40
+    
     # Save final image
     img.save(filename)
 
@@ -300,42 +322,696 @@ async def on_ready():
 @bot.command()
 async def uniform(ctx):
     member = ctx.author
+    filename = f"{member.name}_uniform.png"
+    filename_r = f"{member.name}_r.png"
+    
     # Gather all roles except @everyone
     all_roles = sorted([r for r in member.roles if r.name != "@everyone"], key=lambda r: r.position)
 
     # Determine primary rank and assignment
-    template_roles = [r for r in reversed(all_roles) if r.name in rank_templates]
-    rank_role = template_roles[0].name if template_roles else None
-    rank_data = rank_templates.get(rank_role, {}) if rank_role else {}
-
+    rank_roles = [r for r in reversed(all_roles) if r.name in rank_templates]
     assign_roles = [r for r in reversed(all_roles) if r.name in assignment_templates]
     assign_role = assign_roles[0].name if assign_roles else None
     assign_data = assignment_templates.get(assign_role, {}) if assign_role else {}
-
-    # Other roles
+    
+    eib_roles = [r.name for r in reversed(all_roles) if r.name in eib_templates]
     award_roles = [r.name for r in reversed(all_roles) if r.name in award_templates]
-
-    # Download icons
-    role_icons = {}
-    for r in member.roles:
-        path = await download_role_icon(r)
-        if path:
-            role_icons[r.name] = path
-
-    # Generate and send image
-    filename = f"{member.name}_uniform.png"
+    uc_roles = [r.name for r in reversed(all_roles) if r.name in unitcoms_templates]
+    patch_roles = [r.name for r in reversed(all_roles) if r.name in patch_templates]
+    driver_roles = [r.name for r in reversed(all_roles) if r.name in driver_templates]
+    equal_roles = [r.name for r in reversed(all_roles) if r.name in equal_templates]
+    squal_roles = [r.name for r in reversed(all_roles) if r.name in squal_templates]
+    mqual_roles = [r.name for r in reversed(all_roles) if r.name in mqual_templates]
+              
+    # Generate main image    
     generate_uniform_card(
         member.display_name,
-        rank_role,
-        rank_data,
+        rank_roles,
         assign_role,
         assign_data,
         award_roles,
-        role_icons,
+        eib_roles,
+        uc_roles,
+        patch_roles,
+        driver_roles,
+        equal_roles,
+        squal_roles,
+        mqual_roles,
         filename
     )
-    await ctx.send(file=discord.File(filename))
+    
+    # Grab the current background image
+    bg = Image.open(filename).convert('RGBA')
+    
+    ##################################################################################
+    # Rank roles
+    shoulder_list = ['Col.','Lt. Col.', 'Maj.', 'Cpt.', '1Lt.', 'CWO.', '2Lt.', 'WO.']
+    # Loop through roles
+    for index, role_name in enumerate(rank_roles):
+        try:
+            # Open ribbon/patch for the role
+            role_image = Image.open(rank_templates[role_name.name]).convert('RGBA')
+
+            # Optionally resize
+            if role_name.name in shoulder_list:
+                x = 1080
+                y = 420
+                if role_name.name in ['1Lt.','2Lt.']:
+                    role_image = role_image.resize((40,60), Image.Resampling.LANCZOS)
+                else:
+                    role_image = role_image.resize((75, 75), Image.Resampling.LANCZOS)
+            else:
+                role_image = role_image.resize((120, 150), Image.Resampling.LANCZOS)
+                x = 850
+                y = 480
+
+            # Paste the role image onto background
+            bg.paste(role_image, (x, y), mask=role_image)
+
+        except FileNotFoundError:
+            print(f"Image for role '{role_name}' not found. Skipping.")  
+    ##################################################################################
+    # EIB/CIB roles
+        
+    # Loop through roles
+    for index, role_name in enumerate(eib_roles):
+        try:
+            # Open ribbon/patch for the role
+            role_image = Image.open(eib_templates[role_name]).convert('RGBA')
+
+            # Optionally resize
+            if role_name == 'Expert Infantryman Badge':
+                role_image = role_image.resize((150, 20), Image.Resampling.LANCZOS)
+            if role_name == 'Combat Infantryman Badge':
+                role_image = role_image.resize((150, 35), Image.Resampling.LANCZOS)
+                
+            # Calculate position 
+            x = 1425 
+            y = 380  
+
+            # Paste the role image onto background
+            bg.paste(role_image, (x, y), mask=role_image)
+
+        except FileNotFoundError:
+            print(f"Image for role '{role_name}' not found. Skipping.")  
+            
+    ##################################################################################
+    # Patches
+        
+    # Loop through roles
+    for index, role_name in enumerate(patch_roles):
+        try:
+            # Open ribbon/patch for the role
+            role_image = Image.open(patch_templates[role_name]).convert('RGBA')
+
+            # Optionally resize
+            if role_name == 'Pathfinder':
+                role_image = role_image.resize((40, 40), Image.Resampling.LANCZOS)
+                x = 1530 
+                y = 400
+                bg.paste(role_image, (x, y), mask=role_image)
+            if role_name == 'Ranger':
+                role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
+                x = 1625 
+                y = 370
+                bg.paste(role_image, (x, y), mask=role_image)
+            if role_name == 'Recon':
+                role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
+                x = 1625
+                y = 400
+                bg.paste(role_image, (x, y), mask=role_image)
+
+        except FileNotFoundError:
+            print(f"Image for role '{role_name}' not found. Skipping.")  
+    
+    ###################################################################################
+    # Ribbon roles
+    ribbon_width = 100
+    ribbon_height = 35
+    ribbons_per_row = 3
+    
+    ribbons = []
+    for role in award_roles:
+        role_name = role
+        if role_name in award_templates:
+            img_path = award_templates[role_name]
+            img = Image.open(img_path)
+            ribbons.append(img)
+    
+    if not ribbons:
+        print("You don't have any ribbons assigned to you")
+    
+    # Trim all ribbons first
+    ribbons = [trim(ribbon) for ribbon in ribbons]
+
+    # Count and calculate
+    num_ribbons = len(ribbons)
+    rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+    rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+    rack_height = rows * ribbon_height
+
+    # Create blank rack
+    rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+
+    # Reverse ribbons for right-to-left, bottom-to-top stacking
+    ribbons = list(reversed(ribbons))
+
+    # Build the rack
+    for index, ribbon in enumerate(ribbons):
+        row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+        col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+
+        # Default x, y position
+        x = col * ribbon_width
+        y = row * ribbon_height
+
+        # Center the top row if incomplete
+        if row == 0:
+            ribbons_in_top_row = num_ribbons % ribbons_per_row
+            if ribbons_in_top_row == 0:
+                ribbons_in_top_row = ribbons_per_row
+
+            total_row_width = ribbons_in_top_row * ribbon_width
+            offset = (rack_width - total_row_width) // 2
+
+            x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+        else:
+            x = col * ribbon_width
+            
+        # Resize ribbon to fit exactly if needed
+        ribbon = ribbon.resize((ribbon_width, ribbon_height))
+
+        # Paste ribbon
+        rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+    # Draw a black frame around the rack
+    draw = ImageDraw.Draw(rack)
+    draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+    rackname = f"{member.name}_ribbons.png"
+    rack.save(rackname)
+
+    # Set Rack Location
+    rack_x = 1380
+    rack_y = 540 - rack_height + (rows * 20)
+
+    # Ribbon Scale by a factor 
+    rscale_factor = 0.6
+
+    # Calculate Ribbon new size
+    new_width = int(rack.width * rscale_factor)
+    new_height = int(rack.height * rscale_factor)
+
+    # Resize the rack
+    rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+    # Place the rack on the image
+    bg.paste(rack, (rack_x, rack_y), mask=rack)
+    
+    ###################################################################################
+    # Unit Coms
+    ribbon_width = 100
+    ribbon_height = 35
+    ribbons_per_row = 3
+    
+    ribbons = []
+    for role in uc_roles:
+        role_name = role
+        if role_name in unitcoms_templates:
+            img_path = unitcoms_templates[role_name]
+            img = Image.open(img_path)
+            ribbons.append(img)
+    
+    if not ribbons:
+        print("You don't have any unit coms assigned to you")
+    
+    # Trim all ribbons first
+    ribbons = [trim(ribbon) for ribbon in ribbons]
+
+    # Count and calculate
+    num_ribbons = len(ribbons)
+    rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+    rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+    rack_height = rows * ribbon_height
+
+    # Create blank rack
+    rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+
+    # Reverse ribbons for right-to-left, bottom-to-top stacking
+    ribbons = list(reversed(ribbons))
+
+    # Build the rack
+    for index, ribbon in enumerate(ribbons):
+        row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+        col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+
+        # Default x, y position
+        x = col * ribbon_width
+        y = row * ribbon_height
+
+        # Center the top row if incomplete
+        if row == 0:
+            ribbons_in_top_row = num_ribbons % ribbons_per_row
+            if ribbons_in_top_row == 0:
+                ribbons_in_top_row = ribbons_per_row
+
+            total_row_width = ribbons_in_top_row * ribbon_width
+            offset = (rack_width - total_row_width) // 2
+
+            x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+        else:
+            x = col * ribbon_width
+            
+        # Resize ribbon to fit exactly if needed
+        ribbon = ribbon.resize((ribbon_width, ribbon_height))
+
+        # Paste ribbon
+        rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+    # Draw a black frame around the rack
+    draw = ImageDraw.Draw(rack)
+    draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+    rackname = f"{member.name}_ribbons.png"
+    rack.save(rackname)
+
+    # Set Rack Location
+    rack_x = 1010
+    rack_y = 530 - rack_height + (rows * 20)
+
+    # Ribbon Scale by a factor 
+    rscale_factor = 0.6
+
+    # Calculate Ribbon new size
+    new_width = int(rack.width * rscale_factor)
+    new_height = int(rack.height * rscale_factor)
+
+    # Resize the rack
+    rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+    # Place the rack on the image
+    bg.paste(rack, (rack_x, rack_y), mask=rack)
+    
+    ##################################################################################
+    # Dynamic starting points for qual area
+    
+    driverstart_x = 1325
+    estart_x = 1325 #1425 
+    sstart_x = 1325 #1525
+    mstart_x = 1325 #1625 
+           
+    if driver_roles:
+        estart_x = estart_x + 100
+        sstart_x = sstart_x + 100
+        mstart_x = mstart_x + 100
+    if equal_roles:
+        sstart_x = sstart_x + 100
+        mstart_x = mstart_x + 100
+    if squal_roles: 
+        mstart_x = mstart_x + 100
+    
+    
+    driverstart_y = 570
+    estart_y = 570
+    sstart_y = 570
+    mstart_y = 570
+        
+    ##################################################################################
+    # Driver roles
+    if driver_roles:
+        driverimg = Image.open("awards/Driver.png")
+        driverimg = driverimg.resize((100, 100), Image.Resampling.LANCZOS)
+        bg.paste(driverimg, (driverstart_x,driverstart_y), mask=driverimg)
+    # Loop through roles
+    
+    if driver_roles:
+        ribbon_width = 110
+        ribbon_height = 35
+        ribbons_per_row = 1
+    
+        ribbons = []
+        for role in driver_roles:
+            role_name = role
+            if role_name in driver_templates:
+                img_path = driver_templates[role_name]
+                img = Image.open(img_path)
+                ribbons.append(img)
+    
+        if not ribbons:
+            print("You don't have any driver awards assigned to you")
+        
+        # Trim all ribbons first
+        ribbons = [trim(ribbon) for ribbon in ribbons]
+    
+        # Count and calculate
+        num_ribbons = len(ribbons)
+        rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+        rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+        rack_height = rows * ribbon_height
+    
+        # Create blank rack
+        rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+    
+        # Reverse ribbons for right-to-left, bottom-to-top stacking
+        ribbons = list(reversed(ribbons))
+    
+        # Build the rack
+        for index, ribbon in enumerate(ribbons):
+            row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+            col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+    
+            # Default x, y position
+            x = col * ribbon_width
+            y = row * ribbon_height - (row * 10)
+    
+            # Center the top row if incomplete
+            if row == 0:
+                ribbons_in_top_row = num_ribbons % ribbons_per_row
+                if ribbons_in_top_row == 0:
+                    ribbons_in_top_row = ribbons_per_row
+    
+                total_row_width = ribbons_in_top_row * ribbon_width
+                offset = (rack_width - total_row_width) // 2
+    
+                x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+            else:
+                x = col * ribbon_width
+                
+            # Resize ribbon to fit exactly if needed
+            ribbon = ribbon.resize((ribbon_width, ribbon_height))
+    
+            # Paste ribbon
+            rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+        # Draw a black frame around the rack
+        draw = ImageDraw.Draw(rack)
+        draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+        rackname = f"{member.name}_ribbons.png"
+        rack.save(rackname)
+
+        # Set Rack Location
+        rack_x = driverstart_x + 15 
+        rack_y = driverstart_y + 90
+
+        # Ribbon Scale by a factor 
+        rscale_factor = 0.7
+
+        # Calculate Ribbon new size
+        new_width = int(rack.width * rscale_factor)
+        new_height = int(rack.height * rscale_factor)
+
+        # Resize the rack
+        rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+        # Place the rack on the image
+        bg.paste(rack, (rack_x, rack_y), mask=rack)
+        
+    ##################################################################################
+    # Expert roles
+    if equal_roles:
+        driverimg = Image.open("awards/Expert.png")
+        driverimg = driverimg.resize((100, 100), Image.Resampling.LANCZOS)
+        bg.paste(driverimg, (estart_x,estart_y), mask=driverimg)
+    # Loop through roles
+    
+    if equal_roles:
+        ribbon_width = 110
+        ribbon_height = 35
+        ribbons_per_row = 1
+    
+        ribbons = []
+        for role in equal_roles:
+            role_name = role
+            if role_name in equal_templates:
+                img_path = equal_templates[role_name]
+                img = Image.open(img_path)
+                ribbons.append(img)
+    
+        if not ribbons:
+            print("You don't have any expert awards assigned to you")
+        
+        # Trim all ribbons first
+        ribbons = [trim(ribbon) for ribbon in ribbons]
+    
+        # Count and calculate
+        num_ribbons = len(ribbons)
+        rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+        rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+        rack_height = rows * ribbon_height
+    
+        # Create blank rack
+        rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+    
+        # Reverse ribbons for right-to-left, bottom-to-top stacking
+        ribbons = list(reversed(ribbons))
+    
+        # Build the rack
+        for index, ribbon in enumerate(ribbons):
+            row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+            col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+    
+            # Default x, y position
+            x = col * ribbon_width
+            y = row * ribbon_height - (row * 10)
+    
+            # Center the top row if incomplete
+            if row == 0:
+                ribbons_in_top_row = num_ribbons % ribbons_per_row
+                if ribbons_in_top_row == 0:
+                    ribbons_in_top_row = ribbons_per_row
+    
+                total_row_width = ribbons_in_top_row * ribbon_width
+                offset = (rack_width - total_row_width) // 2
+    
+                x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+            else:
+                x = col * ribbon_width
+                
+            # Resize ribbon to fit exactly if needed
+            ribbon = ribbon.resize((ribbon_width, ribbon_height))
+    
+            # Paste ribbon
+            rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+        # Draw a black frame around the rack
+        draw = ImageDraw.Draw(rack)
+        draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+        rackname = f"{member.name}_ribbons.png"
+        rack.save(rackname)
+
+        # Set Rack Location
+        rack_x = estart_x + 15 
+        rack_y = estart_y + 90
+
+        # Ribbon Scale by a factor 
+        rscale_factor = 0.7
+
+        # Calculate Ribbon new size
+        new_width = int(rack.width * rscale_factor)
+        new_height = int(rack.height * rscale_factor)
+
+        # Resize the rack
+        rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+        # Place the rack on the image
+        bg.paste(rack, (rack_x, rack_y), mask=rack)
+    
+    ##################################################################################
+    # Sharpshooter roles
+    if squal_roles:
+        driverimg = Image.open("awards/Sharpshooter.png")
+        driverimg = driverimg.resize((100, 100), Image.Resampling.LANCZOS)
+        bg.paste(driverimg, (sstart_x,sstart_y), mask=driverimg)
+    # Loop through roles
+    
+    if squal_roles:
+        ribbon_width = 110
+        ribbon_height = 35
+        ribbons_per_row = 1
+    
+        ribbons = []
+        for role in squal_roles:
+            role_name = role
+            if role_name in squal_templates:
+                img_path = squal_templates[role_name]
+                img = Image.open(img_path)
+                ribbons.append(img)
+    
+        if not ribbons:
+            print("You don't have any sharpshooter awards assigned to you")
+        
+        # Trim all ribbons first
+        ribbons = [trim(ribbon) for ribbon in ribbons]
+    
+        # Count and calculate
+        num_ribbons = len(ribbons)
+        rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+        rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+        rack_height = rows * ribbon_height
+    
+        # Create blank rack
+        rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+    
+        # Reverse ribbons for right-to-left, bottom-to-top stacking
+        ribbons = list(reversed(ribbons))
+    
+        # Build the rack
+        for index, ribbon in enumerate(ribbons):
+            row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+            col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+    
+            # Default x, y position
+            x = col * ribbon_width
+            y = row * ribbon_height - (row * 10)
+    
+            # Center the top row if incomplete
+            if row == 0:
+                ribbons_in_top_row = num_ribbons % ribbons_per_row
+                if ribbons_in_top_row == 0:
+                    ribbons_in_top_row = ribbons_per_row
+    
+                total_row_width = ribbons_in_top_row * ribbon_width
+                offset = (rack_width - total_row_width) // 2
+    
+                x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+            else:
+                x = col * ribbon_width
+                
+            # Resize ribbon to fit exactly if needed
+            ribbon = ribbon.resize((ribbon_width, ribbon_height))
+    
+            # Paste ribbon
+            rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+        # Draw a black frame around the rack
+        draw = ImageDraw.Draw(rack)
+        draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+        rackname = f"{member.name}_ribbons.png"
+        rack.save(rackname)
+
+        # Set Rack Location
+        rack_x = sstart_x + 15 
+        rack_y = sstart_y + 90
+
+        # Ribbon Scale by a factor 
+        rscale_factor = 0.7
+
+        # Calculate Ribbon new size
+        new_width = int(rack.width * rscale_factor)
+        new_height = int(rack.height * rscale_factor)
+
+        # Resize the rack
+        rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+        # Place the rack on the image
+        bg.paste(rack, (rack_x, rack_y), mask=rack)   
+        
+        
+    ##################################################################################
+    # Marksman roles
+    if mqual_roles:
+        driverimg = Image.open("awards/Marksman.png")
+        driverimg = driverimg.resize((100, 100), Image.Resampling.LANCZOS)
+        bg.paste(driverimg, (mstart_x,mstart_y), mask=driverimg)
+    # Loop through roles
+    
+    if mqual_roles:
+        ribbon_width = 110
+        ribbon_height = 35
+        ribbons_per_row = 1
+    
+        ribbons = []
+        for role in mqual_roles:
+            role_name = role
+            if role_name in mqual_templates:
+                img_path = mqual_templates[role_name]
+                img = Image.open(img_path)
+                ribbons.append(img)
+    
+        if not ribbons:
+            print("You don't have any marksman awards assigned to you")
+        
+        # Trim all ribbons first
+        ribbons = [trim(ribbon) for ribbon in ribbons]
+    
+        # Count and calculate
+        num_ribbons = len(ribbons)
+        rows = (num_ribbons + ribbons_per_row - 1) // ribbons_per_row  # ceiling division
+        rack_width = min(ribbons_per_row, num_ribbons) * ribbon_width
+        rack_height = rows * ribbon_height
+    
+        # Create blank rack
+        rack = Image.new('RGBA', (rack_width, rack_height), (255, 255, 255, 0))
+    
+        # Reverse ribbons for right-to-left, bottom-to-top stacking
+        ribbons = list(reversed(ribbons))
+    
+        # Build the rack
+        for index, ribbon in enumerate(ribbons):
+            row = (rows - 1) - (index // ribbons_per_row)  # bottom up
+            col = ribbons_per_row - 1 - (index % ribbons_per_row)  # right to left
+    
+            # Default x, y position
+            x = col * ribbon_width
+            y = row * ribbon_height - (row * 10)
+    
+            # Center the top row if incomplete
+            if row == 0:
+                ribbons_in_top_row = num_ribbons % ribbons_per_row
+                if ribbons_in_top_row == 0:
+                    ribbons_in_top_row = ribbons_per_row
+    
+                total_row_width = ribbons_in_top_row * ribbon_width
+                offset = (rack_width - total_row_width) // 2
+    
+                x = (col - (ribbons_per_row - ribbons_in_top_row)) * ribbon_width + offset
+            else:
+                x = col * ribbon_width
+                
+            # Resize ribbon to fit exactly if needed
+            ribbon = ribbon.resize((ribbon_width, ribbon_height))
+    
+            # Paste ribbon
+            rack.paste(ribbon, (x, y), mask=ribbon if ribbon.mode == 'RGBA' else None)
+
+        # Draw a black frame around the rack
+        draw = ImageDraw.Draw(rack)
+        draw.rectangle([(0, 0), (rack_width -1, rack_height -1)], outline="black", width=0)
+    
+        rackname = f"{member.name}_ribbons.png"
+        rack.save(rackname)
+
+        # Set Rack Location
+        rack_x = mstart_x + 15 
+        rack_y = mstart_y + 90
+
+        # Ribbon Scale by a factor 
+        rscale_factor = 0.7
+
+        # Calculate Ribbon new size
+        new_width = int(rack.width * rscale_factor)
+        new_height = int(rack.height * rscale_factor)
+
+        # Resize the rack
+        rack = rack.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+        # Place the rack on the image
+        bg.paste(rack, (rack_x, rack_y), mask=rack)
+        
+    #######################################################  
+    # Save the picture with the all elements
+    bg.save(filename_r)   
+     
+    # Send the file to discord
+    await ctx.send(file=discord.File(filename_r))
+    
+    # Temp file cleanup
+    os.remove(rackname)
     os.remove(filename)
+    os.remove(filename_r)
 
 # Run bot
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
