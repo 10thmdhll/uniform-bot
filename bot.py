@@ -436,8 +436,8 @@ async def uniform(ctx):
                 # Optionally resize
                 if role_name == 'Pathfinder':
                     role_image = role_image.resize((40, 40), Image.Resampling.LANCZOS)
-                    x = 1530 
-                    y = 400
+                    x = 1535
+                    y = 405
                     bg.paste(role_image, (x, y), mask=role_image)
                 if role_name == 'Ranger':
                     role_image = role_image.resize((110, 50), Image.Resampling.LANCZOS)
