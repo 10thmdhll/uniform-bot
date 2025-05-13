@@ -47,20 +47,11 @@ assignment_templates = {
     "Fox Company Leadership": {"Assignment": "Fox Company Command"},
     "FP1 - Leadership": {"Assignment": "Fox Company First Platoon Command"},
     "FP2 - Leadership": {"Assignment": "Fox Company Second Platoon Command"},
-    "FP3 - Leadership": {"Assignment": "Fox Company Third Platoon Command"},
-    "FP1S1": {"Assignment": "Fox Company First Platoon First Squad"},
-    "FP1S2": {"Assignment": "Fox Company First Platoon Second Squad"},
-    "FP1S3": {"Assignment": "Fox Company First Platoon Third Squad"},
-    "FP1S4": {"Assignment": "Fox Company First Platoon Fourth Squad"},
-    "FP2S1": {"Assignment": "Fox Company Second Platoon First Squad"},
-    "FP2S2": {"Assignment": "Fox Company Second Platoon Second Squad"},
-    "FP2S3": {"Assignment": "Fox Company Second Platoon Third Squad"},
-    "FP2S4": {"Assignment": "Fox Company Second Platoon Fourth Squad"},
-    "FP3S1": {"Assignment": "Fox Company Third Platoon First Squad"},
-    "FP3S2": {"Assignment": "Fox Company Third Platoon Second Squad"},
-    "FP3S3": {"Assignment": "Fox Company Third Platoon Third Squad"},
-    "FP3S4": {"Assignment": "Fox Company Third Platoon Fourth Squad"}
-}
+    "FP1 - Infantry": {"Assignment": "Fox Company First Platoon Infantry"},
+    "FP2 - Infantry": {"Assignment": "Fox Company Second Platoon Infantry"},
+    "FP2 - Recon": {"Assignment": "Fox Company Second Platoon Recon"},
+    "FP2 - Armor": {"Assignment": "Fox Company Second Platoon Armor"}
+    }
 unitcoms_templates = {
     "Founders Silver Ribbon": 'awards/Founders1.png',
     "Founders Ribbon": 'awards/Founders.png',
@@ -208,7 +199,7 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
 
     # Draw background silhouette first so icons appear on top
     assign_value = assign_data.get("Assignment", "")
-    armor_assigned = ["Fox Company Third Platoon Command","Fox Company Third Platoon First Squad", "Fox Company Third Platoon Second Squad", "Fox Company Third Platoon Third Squad", "Fox Company Third Platoon Fourth Squad"]
+    armor_assigned = ["Fox Company Second Platoon Armor"]
     
     if assign_value in armor_assigned:
         sil_path = "Armor.png"
