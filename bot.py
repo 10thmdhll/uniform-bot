@@ -331,8 +331,8 @@ async def on_ready():
     print(f"Logged in as {bot.user.name}")
 
 @tree.command(name="uniform")
-async def uniform():
-    member = interaction.user
+async def uniform(ctx):
+    member = ctx.user
     filename = f"{member.name}_uniform.png"
     filename_r = f"{member.name}_r.png"
     
