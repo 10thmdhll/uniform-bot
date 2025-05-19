@@ -326,7 +326,7 @@ async def on_ready():
     await tree.sync()
     print(f"Logged in as {bot.user.name}")
 
-@bot.command()
+@app_commands.command(name="uniform")
 async def uniform(ctx):
     member = ctx.author
     filename = f"{member.name}_uniform.png"
