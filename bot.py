@@ -320,14 +320,9 @@ intents.members = True
 bot = discord.Client(intents=intents)
 tree = app_commands.CommandTree(bot)
 
-GUILD_ID = 889759876916604949
-
 @bot.event
 async def on_ready():
-    guild = discord.Object(id=GUILD_ID)
-    tree.copy_global_to(guild=guild)
-    synced = await tree.sync(guild=guild)
-    print(f"Synced {len(synced)} commands to guild {GUILD_ID}")
+    await tree.sync()
     print(f"Logged in as {bot.user.name}")
 
 @tree.command(name="uniform")
