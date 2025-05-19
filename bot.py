@@ -331,8 +331,8 @@ async def on_ready():
     print(f"Logged in as {bot.user.name}")
 
 @tree.command(name="uniform")
-async def uniform(ctx):
-    member = ctx.user
+async def uniform(interaction: discord.Interaction):
+    member = interaction.user
     filename = f"{member.name}_uniform.png"
     filename_r = f"{member.name}_r.png"
     
@@ -1021,7 +1021,7 @@ async def uniform(ctx):
     bg.save(filename_r)   
      
     # Send the file to discord
-    await ctx.send(file=discord.File(filename_r))
+    await interaction.response.send(file=discord.File(filename_r))
     
     # Temp file cleanup
     os.remove(rackname)
