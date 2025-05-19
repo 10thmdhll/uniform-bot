@@ -320,7 +320,7 @@ intents.members = True
 bot = discord.Client(intents=intents)
 tree = app_commands.CommandTree(bot)
 
-GUILD_ID = 1366830976369557654
+GUILD_ID = 889759876916604949
 
 @bot.event
 async def on_ready():
