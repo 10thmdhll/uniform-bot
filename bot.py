@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 from PIL import Image, ImageDraw, ImageFont
 import os
 import aiohttp
