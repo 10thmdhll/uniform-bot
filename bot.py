@@ -1021,7 +1021,7 @@ async def uniform(interaction: discord.Interaction):
     bg.save(filename_r)   
      
     # Send the file to discord
-    await interaction.response.send(file=discord.File(filename_r))
+    await interaction.response.send_message(file=discord.File(filename_r))
     
     # Temp file cleanup
     os.remove(rackname)
