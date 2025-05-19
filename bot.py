@@ -330,7 +330,7 @@ async def on_ready():
     print(f"Synced {len(synced)} commands to guild {GUILD_ID}")
     print(f"Logged in as {bot.user.name}")
 
-@app_commands.command(name="uniform")
+@tree.command(name="uniform")
 async def uniform(ctx):
     member = ctx.author
     filename = f"{member.name}_uniform.png"
