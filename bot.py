@@ -316,10 +316,13 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
-bot = commands.Bot(command_prefix="/", intents=intents)
+bot = discord.Client(intents=intents)
+tree = app_commands.CommandTree(bot)
+tree.add_command(uniform)
 
 @bot.event
 async def on_ready():
+    await tree.sync()
     print(f"Logged in as {bot.user.name}")
 
 @bot.command()
@@ -385,7 +388,7 @@ async def uniform(ctx):
                     else:
                         role_image = role_image.resize((75, 75), Image.Resampling.LANCZOS)
                 else:
-                    role_image = role_image.resize((120, 150), Image.Resampling.LANCZOS)
+                    role_image = role_image.resize((100, 120), Image.Resampling.LANCZOS)
                     x = 850
                     y = 480
 
