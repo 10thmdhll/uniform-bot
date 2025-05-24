@@ -55,18 +55,18 @@ assignment_templates = {
     "DP1 - Leadership": {"Assignment": "Dog Company First Platoon Command"},
     "FP1 - Leadership": {"Assignment": "Fox Company First Platoon Command"},
     "FP2 - Leadership": {"Assignment": "Fox Company Second Platoon Command"},
+    "S1 - Personnel": {"Assignment": "S1 - Personnel"},
+    "S2 - Planning and Intelligence": {"Assignment": "S2 - Planning and Intelligence"},
+    "S3 - Operations and Training": {"Assignment": "S3 - Operations and Training"},
+    "S5 - Recruitment": {"Assignment": "S5 - Recruitment"},
+    "S6 - Communications": {"Assignment": "S6 - Communications"}
     "DP1 - Infantry": {"Assignment": "Dog Company First Platoon Infantry"},
     "DP1 - Recon": {"Assignment": "Dog Company First Platoon Recon"},
     "DP1 - Logistics": {"Assignment": "Dog Company First Platoon Logistics"},
     "FP1 - Infantry": {"Assignment": "Fox Company First Platoon Infantry"},
     "FP2 - Infantry": {"Assignment": "Fox Company Second Platoon Infantry"},
     "FP2 - Recon": {"Assignment": "Fox Company Second Platoon Recon"},
-    "FP2 - Armor": {"Assignment": "Fox Company Second Platoon Armor"},
-    "S1 - Personnel": {"Assignment": "S1 - Personnel"},
-    "S2 - Planning and Intelligence": {"Assignment": "S2 - Planning and Intelligence"},
-    "S3 - Operations and Training": {"Assignment": "S3 - Operations and Training"},
-    "S5 - Recruitment": {"Assignment": "S5 - Recruitment"},
-    "S6 - Communications": {"Assignment": "S6 - Communications"}
+    "FP2 - Armor": {"Assignment": "Fox Company Second Platoon Armor"}
     }
 unitcoms_templates = {
     "Founders Silver Ribbon": 'awards/Founders1.png',
