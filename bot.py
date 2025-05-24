@@ -59,7 +59,7 @@ assignment_templates = {
     "S2 - Planning and Intelligence": {"Assignment": "S2 - Planning and Intelligence"},
     "S3 - Operations and Training": {"Assignment": "S3 - Operations and Training"},
     "S5 - Recruitment": {"Assignment": "S5 - Recruitment"},
-    "S6 - Communications": {"Assignment": "S6 - Communications"}
+    "S6 - Communications": {"Assignment": "S6 - Communications"},
     "DP1 - Infantry": {"Assignment": "Dog Company First Platoon Infantry"},
     "DP1 - Recon": {"Assignment": "Dog Company First Platoon Recon"},
     "DP1 - Logistics": {"Assignment": "Dog Company First Platoon Logistics"},
