@@ -205,7 +205,7 @@ award_templates = {
 }
 
 # === Generate uniform card image ===
-def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award_roles, eib_roles, uc_roles, patch_roles, driver_roles, equal_roles, squal_roles, mqual_roles, filename):
+def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_roles, uc_roles, patch_roles, driver_roles, equal_roles, squal_roles, mqual_roles, filename):
     width, height = 1800, 1200
     
     # Background Color
@@ -251,7 +251,7 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
 
     # Assignment section
     if assign_roles:
-        print(assign_role)
+        print(assign_roles)
         for role in assign_roles:
             y += 40
             assign_value = role.get("Assignment", "")
