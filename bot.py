@@ -214,7 +214,7 @@ def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_
     draw = ImageDraw.Draw(img)
 
     # Draw background silhouette first so icons appear on top
-    assign_value = assign_data.get("Assignment", "")
+    assign_value = assign_roles.get("Assignment", "")
     armor_assigned = ["Fox Company Second Platoon Armor"]
     
     if assign_value in armor_assigned:
