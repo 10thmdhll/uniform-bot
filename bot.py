@@ -253,15 +253,7 @@ def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_
     if assign_roles:
         y += 40
         for role in assign_roles:
-            info = assignment_templates.get(role.name, {})
-            assign_value = info.get("Assignment", role.name)
-    
-            draw.text(
-                (40, y),
-                f"Assignment: {assign_value}",
-                fill="white",
-                font=header_font
-            )
+            draw.text((40, y),f"Assignment: {role}",fill="white",font=header_font)
             y += 40
 
 
