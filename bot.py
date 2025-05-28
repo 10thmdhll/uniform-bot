@@ -365,8 +365,7 @@ async def uniform(interaction: discord.Interaction):
     generate_uniform_card(
         member.display_name,
         rank_roles,
-        assign_role,
-        assign_data,
+        assign_roles,
         award_roles,
         eib_roles,
         uc_roles,
