@@ -250,12 +250,11 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
             y += 40
 
     # Assignment section
-    if assign_role and assign_data:
+    if assign_roles:
         print(assign_role)
-        print(assign_data)
-        for role in assign_role:
+        for role in assign_roles:
             y += 40
-            assign_value = assign_data.get("Assignment", "")
+            assign_value = role.get("Assignment", "")
             draw.text((40, y), f"Assignment: {assign_value}", fill="white", font=header_font)
             y += 40
 
@@ -350,8 +349,8 @@ async def uniform(interaction: discord.Interaction):
     # Determine primary rank and assignment
     rank_roles = [r for r in reversed(all_roles) if r.name in rank_templates]
     assign_roles = [r for r in reversed(all_roles) if r.name in assignment_templates]
-    assign_role = assign_roles[0].name if assign_roles else None
-    assign_data = assignment_templates.get(assign_role, {}) if assign_role else {}
+    #assign_role = assign_roles[0].name if assign_roles else None
+    #assign_data = assignment_templates.get(assign_role, {}) if assign_role else {}
     
     eib_roles = [r.name for r in reversed(all_roles) if r.name in eib_templates]
     award_roles = [r.name for r in reversed(all_roles) if r.name in award_templates]
