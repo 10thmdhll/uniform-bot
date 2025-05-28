@@ -215,7 +215,6 @@ def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_
     draw = ImageDraw.Draw(img)
 
     # Draw background silhouette first so icons appear on top
-    print(assign_roles)
     assign_value = assign_roles[0]
     armor_assigned = ["FP2 - Armor"]
     
