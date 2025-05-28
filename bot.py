@@ -43,30 +43,30 @@ rank_templates = {
     'Pvt.': 'ranks/PVT.png'
 }
 assignment_templates = {
-    "Division Command": {"Assignment": "Division Command"},
-    "Battalion Leadership": {"Assignment": "Battalion Command"},
-    "Dog Company Leadership": {"Assignment": "Dog Company Command"},
-    "Fox Company Leadership": {"Assignment": "Fox Company Command"},
-    "Chief of Staff S1 - Personnel": {"Assignment": "Chief of Staff S1 - Personnel"},
-    "Chief of Staff S2 - Intelligence": {"Assignment": "Chief of Staff S2 - Intelligence"},
-    "Chief of Staff S3 - Operations and Training": {"Assignment": "Chief of Staff S3 - Operations and Training"},
-    "Chief of Staff S5 - Recruitment": {"Assignment": "Chief of Staff S5 - Recruitment"},
-    "Chief of Staff - OWI": {"Assignment": "Chief of Staff - OWI"},
-    "DP1 - Leadership": {"Assignment": "Dog Company First Platoon Command"},
-    "FP1 - Leadership": {"Assignment": "Fox Company First Platoon Command"},
-    "FP2 - Leadership": {"Assignment": "Fox Company Second Platoon Command"},
-    "S1 - Personnel": {"Assignment": "S1 - Personnel"},
-    "S2 - Planning and Intelligence": {"Assignment": "S2 - Planning and Intelligence"},
-    "S3 - Operations and Training": {"Assignment": "S3 - Operations and Training"},
-    "S5 - Recruitment": {"Assignment": "S5 - Recruitment"},
-    "S6 - Communications": {"Assignment": "S6 - Communications"},
-    "DP1 - Infantry": {"Assignment": "Dog Company First Platoon Infantry"},
-    "DP1 - Recon": {"Assignment": "Dog Company First Platoon Recon"},
-    "DP1 - Logistics": {"Assignment": "Dog Company First Platoon Logistics"},
-    "FP1 - Infantry": {"Assignment": "Fox Company First Platoon Infantry"},
-    "FP2 - Infantry": {"Assignment": "Fox Company Second Platoon Infantry"},
-    "FP2 - Recon": {"Assignment": "Fox Company Second Platoon Recon"},
-    "FP2 - Armor": {"Assignment": "Fox Company Second Platoon Armor"}
+    "Division Command": "Division Command",
+    "Battalion Leadership": "Battalion Command",
+    "Dog Company Leadership": "Dog Company Command",
+    "Fox Company Leadership": "Fox Company Command",
+    "Chief of Staff S1 - Personnel": "Chief of Staff S1 - Personnel",
+    "Chief of Staff S2 - Intelligence": "Chief of Staff S2 - Intelligence",
+    "Chief of Staff S3 - Operations and Training": "Chief of Staff S3 - Operations and Training",
+    "Chief of Staff S5 - Recruitment": "Chief of Staff S5 - Recruitment",
+    "Chief of Staff - OWI": "Chief of Staff - OWI",
+    "DP1 - Leadership": "Dog Company First Platoon Command",
+    "FP1 - Leadership": "Fox Company First Platoon Command",
+    "FP2 - Leadership": "Fox Company Second Platoon Command",
+    "S1 - Personnel": "S1 - Personnel",
+    "S2 - Planning and Intelligence": "S2 - Planning and Intelligence",
+    "S3 - Operations and Training": "S3 - Operations and Training",
+    "S5 - Recruitment": "S5 - Recruitment",
+    "S6 - Communications": "S6 - Communications",
+    "DP1 - Infantry": "Dog Company First Platoon Infantry",
+    "DP1 - Recon": "Dog Company First Platoon Recon",
+    "DP1 - Logistics": "Dog Company First Platoon Logistics",
+    "FP1 - Infantry": "Fox Company First Platoon Infantry",
+    "FP2 - Infantry": "Fox Company Second Platoon Infantry",
+    "FP2 - Recon": "Fox Company Second Platoon Recon",
+    "FP2 - Armor": "Fox Company Second Platoon Armor"
     }
 unitcoms_templates = {
     "Founders Silver Ribbon": 'awards/Founders1.png',
@@ -347,10 +347,7 @@ async def uniform(interaction: discord.Interaction):
 
     # Determine primary rank and assignment
     rank_roles = [r for r in reversed(all_roles) if r.name in rank_templates]
-    assign_roles = [r for r in reversed(all_roles) if r.name in assignment_templates]
-    #assign_role = assign_roles[0].name if assign_roles else None
-    #assign_data = assignment_templates.get(assign_role, {}) if assign_role else {}
-    
+    assign_roles = [r.name for r in reversed(all_roles) if r.name in assignment_templates]    
     eib_roles = [r.name for r in reversed(all_roles) if r.name in eib_templates]
     award_roles = [r.name for r in reversed(all_roles) if r.name in award_templates]
     uc_roles = [r.name for r in reversed(all_roles) if r.name in unitcoms_templates]
