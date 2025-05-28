@@ -251,6 +251,8 @@ def generate_uniform_card(user_name, rank_roles, assign_role, assign_data, award
 
     # Assignment section
     if assign_role and assign_data:
+        print(assign_role)
+        print(assign_data)
         for role in assign_role:
             y += 40
             assign_value = assign_data.get("Assignment", "")
