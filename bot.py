@@ -51,6 +51,7 @@ assignment_templates = {
     "Chief of Staff S2 - Intelligence": "Chief of Staff S2 - Intelligence",
     "Chief of Staff S3 - Operations and Training": "Chief of Staff S3 - Operations and Training",
     "Chief of Staff S5 - Recruitment": "Chief of Staff S5 - Recruitment",
+    "Chief of Staff S6 - Communications": "Chief of Staff S6 - Communications",
     "Chief of Staff - OWI": "Chief of Staff - OWI",
     "DP1 - Leadership": "Dog Company First Platoon Command",
     "FP1 - Leadership": "Fox Company First Platoon Command",
@@ -215,7 +216,7 @@ def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_
 
     # Draw background silhouette first so icons appear on top
     print(assign_roles)
-    assign_value = True #assign_roles.get("Assignment", "")
+    assign_value = assign_roles[0]
     armor_assigned = ["Fox Company Second Platoon Armor"]
     
     if assign_value in armor_assigned:
@@ -254,7 +255,7 @@ def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_
     if assign_roles:
         y += 40
         for role in assign_roles:
-            draw.text((40, y),f"Assignment: {role}",fill="white",font=header_font)
+            draw.text((40, y),f"Assignment: {role}",fill="white",font=text_font)
             y += 40
 
 
