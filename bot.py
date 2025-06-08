@@ -249,16 +249,16 @@ def generate_uniform_card(user_name, rank_roles, assign_roles, award_roles, eib_
     # Rank section
     if rank_roles:
         for rank_name in rank_roles:
-            draw.text((40, y), f"Rank: {rank_name}", fill="white", font=header_font)
+            draw.text((40, y), f"Rank: {rank_name}", fill="white", font=text_font)
             y += 30     
-            y += 20
+            y += 10
 
     # Assignment section
     if assign_roles:
         y += 20
         for role in assign_roles:
-            draw.text((40, y),f"Assignment: {role}",fill="white",font=text_font)
-            y += 40
+            draw.text((40, y),f"Assignment: {role}",fill="white",font=small_font)
+            y += 20
 
 
     # Awards section
