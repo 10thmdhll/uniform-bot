@@ -399,7 +399,7 @@ async def uniform(interaction: discord.Interaction):
                     else:
                         role_image = role_image.resize((75, 75), Image.Resampling.LANCZOS)
                 else:
-                    role_image = role_image.resize((100, 120), Image.Resampling.LANCZOS)
+                    role_image = role_image.resize((100, 182), Image.Resampling.LANCZOS)
                     x = 850
                     y = 480
 
